@@ -1,0 +1,13 @@
+{
+  "environment": "Breakout-v0",
+  "policy": "CRPolicy",
+  "processes": 16,
+  "steps": 5e6,
+  "lr": 7e-4,
+  "gamma": 0.99,
+  "max_norm": 0.5,
+  "batch_size": 128,
+  "device": "/cpu:0",
+  "save_dir": "ckpt",
+  "file_prefix": "ckpt/ckpt"
+}
