@@ -1,5 +1,4 @@
 import os
-import numpy.random as nr
 import tensorflow as tf
 import numpy as np
 import cv2

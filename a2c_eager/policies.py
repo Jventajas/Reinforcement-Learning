@@ -1,10 +1,9 @@
 import tensorflow as tf
-import numpy as np
 from tensorflow.initializers import orthogonal
-from tensorflow.keras.layers import Dense, Conv2D, MaxPool2D, Flatten
+from tensorflow.keras.layers import Dense, Conv2D, Flatten
 from tensorflow.python.ops.rnn import dynamic_rnn
 
-from tensorflow.contrib.rnn import BasicLSTMCell, GRUCell, MultiRNNCell
+from tensorflow.contrib.rnn import GRUCell, MultiRNNCell
 
 
 class FFPolicy(tf.keras.Model):
@@ -88,7 +87,7 @@ class ActorCritic:
         elif policy == 'FFPolicy':
             self.policy = FFPolicy(n_actions)
         else:
-            raise ValueError(f'Invalid policy type: {policy}')
+            raise ValueError('Invalid policy type: {}'.format(policy))
 
         def forward(obs):
             return self.policy(obs)

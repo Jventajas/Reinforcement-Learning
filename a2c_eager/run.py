@@ -52,7 +52,7 @@ def initialize_process():
     # env = gym.make(config.env)
     model = ActorCritic(env.action_space.n, policy=config.policy)
     loader = tfe.Checkpoint(model=model.policy, optimizer_step=tf.train.get_or_create_global_step())
-    logger = Logger(f"Worker_{os.getpid()}")
+    logger = Logger("Worker_{}".format(os.getpid()))
 
 
 def train():
@@ -88,7 +88,7 @@ def train():
         optimizer.apply_gradients(zip(clipped, model.policy.trainable_weights), global_step=step)
         saver.save(file_prefix=config.file_prefix)
 
-        print(f"Epoch took: {time.time() - ts:.2f}")
+        print("Epoch took: {}".format(time.time() - ts))
         ts = time.time()
 
 
