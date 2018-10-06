@@ -153,6 +153,7 @@ class Logger:
 
     def __init__(self, sess, name, logdir='logs'):
         rews_ph = tf.placeholder(dtype=tf.float32)
+        actions_ph = tf.placeholder(dtype=tf.float32)
         tloss_ph = tf.placeholder(dtype=tf.float32)
         ploss_ph = tf.placeholder(dtype=tf.float32)
         vloss_ph = tf.placeholder(dtype=tf.float32)
@@ -160,33 +161,32 @@ class Logger:
         gnorms_ph = tf.placeholder(dtype=tf.float32)
 
         reward_summary = scalar('Perf/Total Reward', tf.reduce_sum(rews_ph))
+        action_summary = histogram('Action Distribution', actions_ph)
         duration_summary = scalar('Perf/Episode Duration', tf.size(rews_ph))
         tloss_summary = scalar('Perf/Total Loss', tloss_ph)
         ploss_summary = scalar('Perf/Policy Loss', tf.reduce_mean(ploss_ph))
         vloss_summary = scalar('Perf/Value Loss', tf.reduce_mean(vloss_ph))
         ent_summary = scalar('Perf/Policy Entropy', tf.reduce_mean(entropy_ph))
         performance = merge(
-            [reward_summary, duration_summary, tloss_summary, ploss_summary, vloss_summary, ent_summary])
+            [reward_summary, action_summary, duration_summary, tloss_summary, ploss_summary, vloss_summary, ent_summary])
 
         grad_summary = histogram('Gradient Norms', gnorms_ph)
         var_summaries = merge([histogram(var.name, var) for var in tf.trainable_variables()])
 
         dir = os.path.join(logdir, name)
         writer = FileWriter(dir, graph=sess.graph)
-
-        # beholder = Beholder(dir)
         gstep = tf.train.get_or_create_global_step()
 
-        def log_performance(rewards, tloss, ploss, vloss, entropy):
+        def log_performance(rewards, actions, tloss, ploss, vloss, entropy):
             feed_dict = {
                 rews_ph: rewards,
+                actions_ph: actions,
                 tloss_ph: tloss,
                 ploss_ph: ploss,
                 vloss_ph: vloss,
                 entropy_ph: entropy,
             }
             summary, step = sess.run([performance, gstep], feed_dict=feed_dict)
-            # beholder.update(sess)
             writer.add_summary(summary, global_step=step)
 
         def log_gradients(gnorms):

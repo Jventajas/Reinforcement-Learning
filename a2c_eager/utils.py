@@ -127,7 +127,7 @@ class PreprocessObsWrapper(gym.Wrapper):
         return obs, reward, done, info
 
     def reset(self, **kwargs):
-        obs = super().reset(**kwargs)
+        obs = self.env.reset(**kwargs)
         return self._preprocess(obs)
 
     def _preprocess(self, obs):
@@ -154,9 +154,10 @@ class Logger:
         dir = os.path.join(logdir, name)
         writer = summary.create_file_writer(dir, flush_millis=10000)
 
-        def log_performance(rewards, tloss, ploss, vloss, entropy):
+        def log_performance(rewards, actions, tloss, ploss, vloss, entropy):
             with writer.as_default(), summary.record_summaries_every_n_global_steps(10):
                 summary.scalar('Perf/Total Reward', tf.reduce_sum(rewards))
+                summary.histogram('Actions', actions)
                 summary.scalar('Perf/Episode Duration', tf.size(rewards))
                 summary.scalar('Perf/Total Loss', tloss)
                 summary.scalar('Perf/Policy Loss', tf.reduce_mean(ploss))

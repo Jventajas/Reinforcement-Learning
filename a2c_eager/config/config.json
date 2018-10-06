@@ -1,7 +1,7 @@
 {
   "environment": "Breakout-v0",
   "policy": "CRPolicy",
-  "processes": 8,
+  "processes": 16,
   "steps": 1000000,
   "lr": 7e-4,
   "gamma": 0.99,

@@ -40,7 +40,7 @@ def generate_gradients(timestep):
     discounted_rewards = discount(rewards, config.gamma)
     gradients, log_values = model.gradient(observations, advantages, discounted_rewards, actions)
     model.policy.reset()
-    logger.log_performance(rewards, *log_values)
+    logger.log_performance(rewards, actions, *log_values)
     # Convert EagerTensors to numpy arrays for IPC.
     return [gradient.numpy() for gradient in gradients]
 

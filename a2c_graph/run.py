@@ -35,7 +35,7 @@ def generate_rollout(timestep):
     gradients, log_values = model.gradient(observations, advantages, discounted_rewards, actions)
 
     if timestep % 10 == 0:
-        logger.log_performance(rewards, *log_values)
+        logger.log_performance(rewards, actions, *log_values)
 
     model.policy.reset()
     return gradients
